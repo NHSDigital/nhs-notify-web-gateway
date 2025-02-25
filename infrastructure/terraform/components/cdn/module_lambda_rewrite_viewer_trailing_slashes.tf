@@ -1,5 +1,5 @@
 module "lambda_rewrite_viewer_trailing_slashes" {
-  source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda?ref=v1.0.2"
+  source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda?ref=v1.0.9"
 
   providers = {
     aws = aws.us-east-1
