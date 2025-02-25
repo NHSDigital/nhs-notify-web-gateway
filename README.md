@@ -30,6 +30,7 @@ Make use of this repository template to expedite your project setup and enhance 
   - [Contributing](#contributing)
   - [Contacts](#contacts)
   - [Licence](#licence)
+    - [Shared Terraform Modules](#shared-terraform-modules)
 
 ## Documentation
 
