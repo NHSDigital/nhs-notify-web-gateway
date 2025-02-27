@@ -129,3 +129,8 @@ variable "cms_origin" {
     origin_id   = "github-nhs-notify-web-cms"
   }
 }
+
+variable "observability_account_id" {
+  type        = string
+  description = "The Observability Account ID that needs access"
+}
