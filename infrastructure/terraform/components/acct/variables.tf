@@ -62,8 +62,3 @@ variable "root_domain_name" {
   description = "The service's root DNS root nameespace, like nonprod.nhsnotify.national.nhs.uk"
   default     = "nonprod.nhsnotify.national.nhs.uk"
 }
-
-variable "observability_account_id" {
-  type        = string
-  description = "The Observability Account ID that needs access"
-}
