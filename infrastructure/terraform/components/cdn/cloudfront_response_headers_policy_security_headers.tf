@@ -10,6 +10,10 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
       # static pages have a wildcard value by default, removing this enforces 'same-origin'
       header = "access-control-allow-origin"
     }
+    items {
+      # this header is deprecated
+      header = "x-xss-protection"
+    }
   }
 
   security_headers_config {
