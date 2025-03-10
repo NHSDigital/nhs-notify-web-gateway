@@ -27,6 +27,7 @@
 | <a name="input_kms_deletion_window"></a> [kms\_deletion\_window](#input\_kms\_deletion\_window) | When a kms key is deleted, how long should it wait in the pending deletion state? | `string` | `"30"` | no |
 | <a name="input_log_level"></a> [log\_level](#input\_log\_level) | The log level to be used in lambda functions within the component. Any log with a lower severity than the configured value will not be logged: https://docs.python.org/3/library/logging.html#levels | `string` | `"INFO"` | no |
 | <a name="input_log_retention_in_days"></a> [log\_retention\_in\_days](#input\_log\_retention\_in\_days) | The retention period in days for the Cloudwatch Logs events to be retained, default of 0 is indefinite | `number` | `0` | no |
+| <a name="input_observability_account_id"></a> [observability\_account\_id](#input\_observability\_account\_id) | The Observability Account ID that needs access | `string` | n/a | yes |
 | <a name="input_parent_acct_environment"></a> [parent\_acct\_environment](#input\_parent\_acct\_environment) | Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments | `string` | `"main"` | no |
 | <a name="input_project"></a> [project](#input\_project) | The name of the tfscaffold project | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The AWS Region | `string` | n/a | yes |
@@ -36,9 +37,9 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_kms"></a> [kms](#module\_kms) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/kms | v1.0.8 |
-| <a name="module_lambda_rewrite_origin_branch_requests"></a> [lambda\_rewrite\_origin\_branch\_requests](#module\_lambda\_rewrite\_origin\_branch\_requests) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.8 |
-| <a name="module_lambda_rewrite_viewer_trailing_slashes"></a> [lambda\_rewrite\_viewer\_trailing\_slashes](#module\_lambda\_rewrite\_viewer\_trailing\_slashes) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.8 |
-| <a name="module_s3bucket_cf_logs"></a> [s3bucket\_cf\_logs](#module\_s3bucket\_cf\_logs) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket | v1.0.8 |
+| <a name="module_lambda_rewrite_origin_branch_requests"></a> [lambda\_rewrite\_origin\_branch\_requests](#module\_lambda\_rewrite\_origin\_branch\_requests) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.9 |
+| <a name="module_lambda_rewrite_viewer_trailing_slashes"></a> [lambda\_rewrite\_viewer\_trailing\_slashes](#module\_lambda\_rewrite\_viewer\_trailing\_slashes) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.9 |
+| <a name="module_s3bucket_cf_logs"></a> [s3bucket\_cf\_logs](#module\_s3bucket\_cf\_logs) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket | v1.0.9 |
 ## Outputs
 
 | Name | Description |
