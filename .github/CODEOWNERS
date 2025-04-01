@@ -2,8 +2,8 @@
 
 *                           @NHSDigital/nhs-notify-web-gateway
 
-/.github/                   @NHSDigital/nhs-notify-iam-admins
-*.code-workspace            @NHSDigital/nhs-notify-iam-admins
+/.github/                   @NHSDigital/nhs-notify-web-gateway-admins
+*.code-workspace            @NHSDigital/nhs-notify-web-gateway-admins
 /infrastructure/terraform/  @NHSDigital/nhs-notify-platform
 
 # Default protection for codeowners, must be last in file.
