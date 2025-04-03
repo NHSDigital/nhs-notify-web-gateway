@@ -1,6 +1,10 @@
 module "s3bucket_access_logs" {
   source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket?ref=v1.0.8"
 
+  providers = {
+    aws = aws.us-east-1
+  }
+
   name = "access-logs"
 
   aws_account_id = var.aws_account_id
