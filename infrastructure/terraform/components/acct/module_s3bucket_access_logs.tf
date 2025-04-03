@@ -8,7 +8,7 @@ module "s3bucket_access_logs" {
   name = "access-logs"
 
   aws_account_id = var.aws_account_id
-  region         = var.region
+  region         = "us-east-1"
   project        = var.project
   environment    = var.environment
   component      = var.component
