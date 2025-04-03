@@ -1,5 +1,5 @@
 module "s3bucket_lambda_artefacts" {
-  source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket?ref=v1.0.8"
+  source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket?ref=feature/CCM-9371_Fixes"
   providers = {
     aws = aws.us-east-1
   }
