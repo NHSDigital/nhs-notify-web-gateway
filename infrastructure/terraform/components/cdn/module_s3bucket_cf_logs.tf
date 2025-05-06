@@ -196,7 +196,7 @@ data "aws_iam_policy_document" "s3bucket_cf_logs" {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
       values = [
-        aws_cloudfront_distribution.main
+        aws_cloudfront_distribution.main.arn
       ]
     }
   }
