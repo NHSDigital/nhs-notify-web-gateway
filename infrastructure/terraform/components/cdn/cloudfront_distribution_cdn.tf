@@ -49,6 +49,50 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
+  # POC s3 origin
+  origin {
+    domain_name              = module.s3bucket_cf_logs.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.poc.id
+    origin_id                = "poc"
+    origin_path              = "/poc"
+  }
+
+
+  # POC s3 behaviour
+  ordered_cache_behavior {
+    path_pattern = "poc/*"
+
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    target_origin_id = "poc"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "all"
+      }
+    }
+
+    # lambda_function_association {
+    #   event_type = "viewer-request"
+    #   lambda_arn = module.lambda_rewrite_viewer_trailing_slashes.function_qualified_arn
+    # }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+  }
+
   # Github Web-CMS behaviour
   default_cache_behavior {
     allowed_methods = [

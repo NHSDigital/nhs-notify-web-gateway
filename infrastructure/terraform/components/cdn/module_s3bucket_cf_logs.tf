@@ -172,4 +172,32 @@ data "aws_iam_policy_document" "s3bucket_cf_logs" {
       ]
     }
   }
+
+  statement {
+    sid    = "AllowPoc"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+    ]
+
+    resources = [
+      "${module.s3bucket_cf_logs.arn}/poc/*",
+    ]
+
+    principals {
+      type = "Service"
+      identifiers = [
+        "cloudfront.amazonaws.com"
+      ]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+      values = [
+        aws_cloudfront_distribution.main
+      ]
+    }
+  }
 }
