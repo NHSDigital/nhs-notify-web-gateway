@@ -73,8 +73,9 @@ resource "aws_cloudfront_distribution" "main" {
     target_origin_id = "poc"
 
     forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
+      query_string            = false
+      query_string_cache_keys = []
+      headers                 = ["Origin"]
 
       cookies {
         forward = "all"
@@ -106,8 +107,9 @@ resource "aws_cloudfront_distribution" "main" {
     target_origin_id = "github-nhs-notify-web-cms"
 
     forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
+      query_string            = false
+      query_string_cache_keys = []
+      headers                 = ["Origin"]
 
       cookies {
         forward = "none"
