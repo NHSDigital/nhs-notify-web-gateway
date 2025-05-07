@@ -55,6 +55,16 @@ resource "aws_cloudfront_distribution" "main" {
     origin_access_control_id = aws_cloudfront_origin_access_control.poc.id
     origin_id                = "poc"
     origin_path              = "/poc"
+
+    custom_header {
+      name = "x-user-pool-id"
+      value = "eu-west-2_ng27OMYUx"
+    }
+
+    custom_header {
+      name = "x-user-pool-client-id"
+      value = "2p8hv75iktpl3kgaej3jboe1ld"
+    }
   }
 
 
