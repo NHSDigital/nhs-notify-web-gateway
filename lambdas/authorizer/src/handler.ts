@@ -36,17 +36,11 @@ export const handler = async (event: CloudFrontRequestEvent) => {
 
   const cookie = headers.cookie?.[0]?.value;
 
-  console.log("typeof cookie", typeof cookie);
-
   const parts = (cookie ?? "").split("; ");
-
-  console.log("len", parts.length);
 
   const kvParts = parts.map((p) => p.split("="));
 
   const [, t] = kvParts.find(([k]) => k.endsWith("accessToken")) ?? [];
-
-  console.log("t", t);
 
   try {
     if (!t) {
@@ -55,8 +49,8 @@ export const handler = async (event: CloudFrontRequestEvent) => {
       return deny;
     }
 
-    const userPoolId = "eu-west-2_ng27OMYUx";
-    const userPoolClientId = "2p8hv75iktpl3kgaej3jboe1ld";
+    const userPoolId = "eu-west-2_aFa0RioV9";
+    const userPoolClientId = "5jg7bqn7hv5rj2dgd8c9ub9knb";
     const authorizationToken = t;
 
     if (!userPoolId || !userPoolClientId) {
