@@ -18,8 +18,6 @@ const $AccessToken = z.object({
   token_use: z.string(),
 });
 
-const getEnvironmentVariable = (envName: string) => process.env[envName];
-
 const deny = {
   status: "403",
   statusDescription: "Forbidden",
@@ -39,8 +37,8 @@ export const handler = async (event: CloudFrontRequestEvent) => {
       return deny;
     }
 
-    const userPoolId = getEnvironmentVariable("USER_POOL_ID");
-    const userPoolClientId = getEnvironmentVariable("USER_POOL_CLIENT_ID");
+    const userPoolId = "eu-west-2_ng27OMYUx";
+    const userPoolClientId = "2p8hv75iktpl3kgaej3jboe1ld"
     const authorizationToken = headers.Authorization[0].value;
 
     if (!userPoolId || !userPoolClientId) {
