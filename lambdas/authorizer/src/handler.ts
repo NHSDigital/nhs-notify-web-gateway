@@ -24,24 +24,24 @@ const deny = {
   body: "<h1>Access Denied</h1>",
 };
 
-// function authFromCookie(headers: CloudFrontHeaders) {
-//   const cookie = headers.cookie?.[0]?.value;
-//   const parts = (cookie ?? "").split("; ");
-//   const kvParts = parts.map((p) => p.split("="));
-//   const [, t] = kvParts.find(([k]) => k.endsWith("accessToken")) ?? [];
-//   return t;
-// }
-
-function authFromAuthorization(headers: CloudFrontHeaders) {
-  return headers.authorization?.[0]?.value;
+function authFromCookie(headers: CloudFrontHeaders) {
+  const cookie = headers.cookie?.[0]?.value;
+  const parts = (cookie ?? "").split("; ");
+  const kvParts = parts.map((p) => p.split("="));
+  const [, t] = kvParts.find(([k]) => k.endsWith("accessToken")) ?? [];
+  return t;
 }
+
+// function authFromAuthorization(headers: CloudFrontHeaders) {
+//   return headers.authorization?.[0]?.value;
+// }
 
 export const handler = async (event: CloudFrontRequestEvent) => {
   const { request } = event.Records[0].cf;
 
   const [, ownerPath] = request.uri.match(/^\/poc\/([^/]+)\/.*/) ?? [];
 
-  const authorizationToken = authFromAuthorization(request.headers);
+  const authorizationToken = authFromCookie(request.headers);
 
   try {
     if (!authorizationToken) {
