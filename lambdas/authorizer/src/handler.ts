@@ -49,8 +49,8 @@ export const handler = async (event: CloudFrontRequestEvent) => {
   console.log("t", t);
 
   try {
-    if (!headers?.authorization) {
-      console.warn("no headers?.authorization");
+    if (!t) {
+      console.warn("no t");
 
       return deny;
     }
