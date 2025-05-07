@@ -57,12 +57,12 @@ resource "aws_cloudfront_distribution" "main" {
     origin_path              = "/poc"
 
     custom_header {
-      name = "x-user-pool-id"
+      name  = "x-user-pool-id"
       value = "eu-west-2_ng27OMYUx"
     }
 
     custom_header {
-      name = "x-user-pool-client-id"
+      name  = "x-user-pool-client-id"
       value = "2p8hv75iktpl3kgaej3jboe1ld"
     }
   }
@@ -85,7 +85,7 @@ resource "aws_cloudfront_distribution" "main" {
     forwarded_values {
       query_string            = false
       query_string_cache_keys = []
-      headers                 = ["Origin"]
+      headers                 = ["Origin", "x-user-pool-client-id", "x-user-pool-id"]
 
       cookies {
         forward = "all"
