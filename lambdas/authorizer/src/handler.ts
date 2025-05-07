@@ -1,4 +1,4 @@
-import type { CloudFrontRequestEvent } from "aws-lambda";
+import type { CloudFrontHeaders, CloudFrontRequestEvent } from "aws-lambda";
 import { z } from "zod";
 import {
   CognitoIdentityProviderClient,
@@ -24,34 +24,33 @@ const deny = {
   body: "<h1>Access Denied</h1>",
 };
 
+// function authFromCookie(headers: CloudFrontHeaders) {
+//   const cookie = headers.cookie?.[0]?.value;
+//   const parts = (cookie ?? "").split("; ");
+//   const kvParts = parts.map((p) => p.split("="));
+//   const [, t] = kvParts.find(([k]) => k.endsWith("accessToken")) ?? [];
+//   return t;
+// }
+
+function authFromAuthorization(headers: CloudFrontHeaders) {
+  return headers.authorization?.[0]?.value;
+}
+
 export const handler = async (event: CloudFrontRequestEvent) => {
-  console.log(JSON.stringify(event));
-
   const { request } = event.Records[0].cf;
-  const { headers } = request;
 
-  const [, owner] = request.uri.match(/^\/poc\/([^/]+)\/.*/) ?? [];
+  const [, ownerPath] = request.uri.match(/^\/poc\/([^/]+)\/.*/) ?? [];
 
-  console.log("owner", owner);
-
-  const cookie = headers.cookie?.[0]?.value;
-
-  const parts = (cookie ?? "").split("; ");
-
-  const kvParts = parts.map((p) => p.split("="));
-
-  const [, t] = kvParts.find(([k]) => k.endsWith("accessToken")) ?? [];
+  const authorizationToken = authFromAuthorization(request.headers);
 
   try {
-    if (!t) {
-      console.warn("no t");
-
+    if (!authorizationToken) {
+      console.warn("no token");
       return deny;
     }
 
     const userPoolId = "eu-west-2_aFa0RioV9";
     const userPoolClientId = "5jg7bqn7hv5rj2dgd8c9ub9knb";
-    const authorizationToken = t;
 
     if (!userPoolId || !userPoolClientId) {
       console.error("Lambda misconfiguration");
@@ -117,7 +116,7 @@ export const handler = async (event: CloudFrontRequestEvent) => {
       return deny;
     }
 
-    if (owner !== sub) {
+    if (ownerPath !== sub) {
       console.warn("owner !== sub");
       return deny;
     }
