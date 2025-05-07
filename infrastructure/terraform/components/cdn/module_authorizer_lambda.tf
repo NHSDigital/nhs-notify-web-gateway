@@ -51,17 +51,4 @@ data "aws_iam_policy_document" "authorizer" {
       module.kms.key_arn,
     ]
   }
-
-  statement {
-    sid    = "CloudfrontLambdaPermissions"
-    effect = "Allow"
-
-    actions = [
-      "lambda:GetFunction"
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
 }

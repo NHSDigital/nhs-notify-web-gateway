@@ -30,16 +30,20 @@ export const handler = async (event: CloudFrontRequestEvent) => {
   const { request } = event.Records[0].cf;
   const { headers } = request;
 
-  const path = request.uri;
+  const [, owner] = request.uri.match(/^\/([a-zA-Z0-9]+)\/.*/) ?? [];
+
+  console.log("owner", owner);
 
   try {
-    if (!headers?.Authorization) {
+    if (!headers?.authorization) {
+      console.warn('no headers?.authorization');
+      
       return deny;
     }
 
     const userPoolId = "eu-west-2_ng27OMYUx";
-    const userPoolClientId = "2p8hv75iktpl3kgaej3jboe1ld"
-    const authorizationToken = headers.Authorization[0].value;
+    const userPoolClientId = "2p8hv75iktpl3kgaej3jboe1ld";
+    const authorizationToken = headers.authorization[0].value;
 
     if (!userPoolId || !userPoolClientId) {
       console.error("Lambda misconfiguration");
@@ -103,6 +107,11 @@ export const handler = async (event: CloudFrontRequestEvent) => {
     if (!sub) {
       console.warn("Missing user subject");
       return deny;
+    }
+
+    if (owner !== sub) {
+      console.warn('owner !== sub')
+      return deny
     }
 
     return request;
