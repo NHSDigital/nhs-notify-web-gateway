@@ -30,7 +30,7 @@ export const handler = async (event: CloudFrontRequestEvent) => {
   const { request } = event.Records[0].cf;
   const { headers } = request;
 
-  const [, owner] = request.uri.match(/^\/([a-zA-Z0-9]+)\/.*/) ?? [];
+  const [, owner] = request.uri.match(/^\/poc\/([a-zA-Z0-9]+)\/.*/) ?? [];
 
   console.log("owner", owner);
 
