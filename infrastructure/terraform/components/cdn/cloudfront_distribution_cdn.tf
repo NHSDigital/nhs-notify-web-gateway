@@ -82,10 +82,10 @@ resource "aws_cloudfront_distribution" "main" {
       }
     }
 
-    # lambda_function_association {
-    #   event_type = "viewer-request"
-    #   lambda_arn = module.lambda_rewrite_viewer_trailing_slashes.function_qualified_arn
-    # }
+    lambda_function_association {
+      event_type = "viewer-request"
+      lambda_arn = module.authorizer.function_qualified_arn
+    }
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
