@@ -1,18 +1,15 @@
-import type {
-  APIGatewayEventRequestContextWithAuthorizer,
-  APIGatewayRequestAuthorizerHandler,
-} from 'aws-lambda';
-import { z } from 'zod';
+import type { CloudFrontRequestEvent } from "aws-lambda";
+import { z } from "zod";
 import {
   CognitoIdentityProviderClient,
   GetUserCommand,
-} from '@aws-sdk/client-cognito-identity-provider';
-import { jwtDecode } from 'jwt-decode';
-import { verify } from 'jsonwebtoken';
-import getJwksClient from 'jwks-rsa';
+} from "@aws-sdk/client-cognito-identity-provider";
+import { jwtDecode } from "jwt-decode";
+import { verify } from "jsonwebtoken";
+import getJwksClient from "jwks-rsa";
 
 const cognitoClient = new CognitoIdentityProviderClient({
-  region: 'eu-west-2',
+  region: "eu-west-2",
 });
 
 const $AccessToken = z.object({
@@ -23,50 +20,32 @@ const $AccessToken = z.object({
 
 const getEnvironmentVariable = (envName: string) => process.env[envName];
 
-const generateMethodArn = (
-  requestContext: APIGatewayEventRequestContextWithAuthorizer<undefined>
-) =>
-  `arn:aws:execute-api:eu-west-2:${requestContext.accountId}:${requestContext.apiId}/${requestContext.stage}/*`;
+const deny = {
+  status: "403",
+  statusDescription: "Forbidden",
+  body: "<h1>Access Denied</h1>",
+};
 
-const generatePolicy = (
-  Resource: string,
-  Effect: 'Allow' | 'Deny',
-  context?: { user: string }
-) => ({
-  principalId: 'api-caller',
-  policyDocument: {
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Action: 'execute-api:Invoke',
-        Effect,
-        Resource,
-      },
-    ],
-  },
-  context,
-});
+export const handler = async (event: CloudFrontRequestEvent) => {
+  console.log(JSON.stringify(event));
 
-export const handler: APIGatewayRequestAuthorizerHandler = async ({
-  headers,
-  requestContext,
-}) => {
-  console.log(JSON.stringify(headers));
-  console.log(JSON.stringify(requestContext));
-  
-  const methodArn = generateMethodArn(requestContext);
+  const { request } = event.Records[0].cf;
+  const { headers } = request;
+
+  const path = request.uri;
+
   try {
     if (!headers?.Authorization) {
-      return generatePolicy(methodArn, 'Deny');
+      return deny;
     }
 
-    const userPoolId = getEnvironmentVariable('USER_POOL_ID');
-    const userPoolClientId = getEnvironmentVariable('USER_POOL_CLIENT_ID');
-    const authorizationToken = headers.Authorization;
+    const userPoolId = getEnvironmentVariable("USER_POOL_ID");
+    const userPoolClientId = getEnvironmentVariable("USER_POOL_CLIENT_ID");
+    const authorizationToken = headers.Authorization[0].value;
 
     if (!userPoolId || !userPoolClientId) {
-      console.error('Lambda misconfiguration');
-      return generatePolicy(methodArn, 'Deny');
+      console.error("Lambda misconfiguration");
+      return deny;
     }
 
     const issuer = `https://cognito-idp.eu-west-2.amazonaws.com/${userPoolId}`;
@@ -80,8 +59,8 @@ export const handler: APIGatewayRequestAuthorizerHandler = async ({
     const { kid } = decodedToken;
 
     if (!kid) {
-      console.warn('Authorization token missing kid');
-      return generatePolicy(methodArn, 'Deny');
+      console.warn("Authorization token missing kid");
+      return deny;
     }
 
     const key = await jwksClient.getSigningKey(kid);
@@ -98,15 +77,15 @@ export const handler: APIGatewayRequestAuthorizerHandler = async ({
       console.warn(
         `Token has invalid client ID, expected ${userPoolClientId} but received ${clientId}`
       );
-      return generatePolicy(methodArn, 'Deny');
+      return deny;
     }
 
     // token_use claim
-    if (tokenUse !== 'access') {
+    if (tokenUse !== "access") {
       console.warn(
         `Token has invalid token_use, expected access but received ${tokenUse}`
       );
-      return generatePolicy(methodArn, 'Deny');
+      return deny;
     }
 
     // cognito SDK call - this will error if the user has been deleted
@@ -117,22 +96,20 @@ export const handler: APIGatewayRequestAuthorizerHandler = async ({
     );
 
     if (!Username || !UserAttributes) {
-      console.warn('Missing user');
-      return generatePolicy(methodArn, 'Deny');
+      console.warn("Missing user");
+      return deny;
     }
 
-    const sub = UserAttributes.find(({ Name }) => Name === 'sub')?.Value;
+    const sub = UserAttributes.find(({ Name }) => Name === "sub")?.Value;
 
     if (!sub) {
-      console.warn('Missing user subject');
-      return generatePolicy(methodArn, 'Deny');
+      console.warn("Missing user subject");
+      return deny;
     }
 
-    return generatePolicy(methodArn, 'Allow', {
-      user: sub,
-    });
+    return request;
   } catch (error) {
     console.error(error);
-    return generatePolicy(methodArn, 'Deny');
+    return deny;
   }
 };

@@ -36,12 +36,6 @@ module "authorizer_lambda" {
 
   force_lambda_code_deploy = var.force_lambda_code_deploy
   enable_lambda_insights   = false
-
-  lambda_env_vars = {
-    NODE_OPTIONS        = "--enable-source-maps",
-    USER_POOL_ID        = "placeholder",
-    USER_POOL_CLIENT_ID = "placeholder",
-  }
 }
 
 data "aws_iam_policy_document" "authorizer" {
