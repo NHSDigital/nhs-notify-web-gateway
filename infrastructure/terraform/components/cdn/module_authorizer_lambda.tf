@@ -5,6 +5,8 @@ module "authorizer_lambda" {
     aws = aws.us-east-1
   }
 
+  depends_on = [ local_file.authorizer_cognito_config ]
+
   function_name = "authorizer"
   description   = "Download authorizer"
 
@@ -51,4 +53,12 @@ data "aws_iam_policy_document" "authorizer" {
       module.kms.key_arn,
     ]
   }
+}
+
+resource "local_file" "authorizer_cognito_config" {
+  content = jsonencode({
+    userPoolId       = "eu-west-2_ng27OMYUx"
+    userPoolClientId = "2p8hv75iktpl3kgaej3jboe1ld"
+  })
+  filename = "${local.aws_lambda_functions_dir_path}/authorizer/dist/cognito-config.json"
 }

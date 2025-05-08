@@ -1,4 +1,5 @@
 import type { CloudFrontHeaders, CloudFrontRequestEvent } from "aws-lambda";
+import { readFile, readFileSync } from "node:fs";
 import { z } from "zod";
 import {
   CognitoIdentityProviderClient,
@@ -36,6 +37,13 @@ function authFromCookie(headers: CloudFrontHeaders) {
 //   return headers.authorization?.[0]?.value;
 // }
 
+const cognitoConfig = z
+  .object({
+    userPoolId: z.string(),
+    userPoolClientId: z.string(),
+  })
+  .parse(JSON.parse(readFileSync("/var/task/cognito-config.json", "utf8")));
+
 export const handler = async (event: CloudFrontRequestEvent) => {
   const { request } = event.Records[0].cf;
 
@@ -49,15 +57,7 @@ export const handler = async (event: CloudFrontRequestEvent) => {
       return deny;
     }
 
-    const userPoolId = "eu-west-2_aFa0RioV9";
-    const userPoolClientId = "5jg7bqn7hv5rj2dgd8c9ub9knb";
-
-    if (!userPoolId || !userPoolClientId) {
-      console.error("Lambda misconfiguration");
-      return deny;
-    }
-
-    const issuer = `https://cognito-idp.eu-west-2.amazonaws.com/${userPoolId}`;
+    const issuer = `https://cognito-idp.eu-west-2.amazonaws.com/${cognitoConfig.userPoolId}`;
 
     const jwksClient = getJwksClient({
       jwksUri: `${issuer}/.well-known/jwks.json`,
@@ -82,9 +82,9 @@ export const handler = async (event: CloudFrontRequestEvent) => {
       $AccessToken.parse(verifiedToken);
 
     // client_id claim
-    if (clientId !== userPoolClientId) {
+    if (clientId !== cognitoConfig.userPoolClientId) {
       console.warn(
-        `Token has invalid client ID, expected ${userPoolClientId} but received ${clientId}`
+        `Token has invalid client ID, expected ${cognitoConfig.userPoolClientId} but received ${clientId}`
       );
       return deny;
     }
