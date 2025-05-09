@@ -265,11 +265,6 @@ resource "aws_cloudfront_cache_policy" "no_cache" {
 resource "aws_cloudfront_origin_request_policy" "forward_custom_headers_and_cookies" {
   name = "forward-custom-headers-and-cookies"
   cookies_config { cookie_behavior = "all" }
-
-  headers_config {
-    header_behavior = "whitelist"
-    headers { items = ["x-user-pool-id", "x-user-pool-client-id"] }
-  }
-
+  headers_config { header_behavior = "none" }
   query_strings_config { query_string_behavior = "none" }
 }
