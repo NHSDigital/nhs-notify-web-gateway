@@ -37,6 +37,8 @@ function authFromCookie(headers: CloudFrontHeaders) {
 // }
 
 export const handler = async (event: CloudFrontRequestEvent) => {
+  console.log(event);
+  
   const { request } = event.Records[0].cf;
 
   const [, ownerPath] = request.uri.match(/^\/poc\/([^/]+)\/.*/) ?? [];
@@ -44,6 +46,9 @@ export const handler = async (event: CloudFrontRequestEvent) => {
   const authorizationToken = authFromCookie(request.headers);
   const userPoolId = request.headers['x-user-pool-id']?.[0].value
   const userPoolClientId = request.headers['x-user-pool-client-id']?.[0].value
+
+  console.log(userPoolId, userPoolClientId);
+  
 
   try {
     if (!authorizationToken) {
