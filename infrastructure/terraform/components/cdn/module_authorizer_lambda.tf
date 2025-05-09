@@ -54,11 +54,3 @@ data "aws_iam_policy_document" "authorizer" {
     ]
   }
 }
-
-resource "local_file" "authorizer_cognito_config" {
-  content = jsonencode({
-    userPoolId       = "eu-west-2_aFa0RioV9"
-    userPoolClientId = "5jg7bqn7hv5rj2dgd8c9ub9knb"
-  })
-  filename = "${local.aws_lambda_functions_dir_path}/authorizer/dist/cognito-config.json"
-}

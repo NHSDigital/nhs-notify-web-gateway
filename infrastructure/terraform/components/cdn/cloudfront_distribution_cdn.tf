@@ -55,6 +55,16 @@ resource "aws_cloudfront_distribution" "main" {
     origin_access_control_id = aws_cloudfront_origin_access_control.poc.id
     origin_id                = "poc"
     origin_path              = "/poc"
+
+    custom_header {
+      name  = "x-user-pool-id"
+      value = "eu-west-2_aFa0RioV9"
+    }
+
+    custom_header {
+      name  = "x-user-pool-client-id"
+      value = "5jg7bqn7hv5rj2dgd8c9ub9knb"
+    }
   }
 
 
@@ -70,27 +80,18 @@ resource "aws_cloudfront_distribution" "main" {
       "GET",
       "HEAD",
     ]
+
     target_origin_id = "poc"
 
-    forwarded_values {
-      query_string            = false
-      query_string_cache_keys = []
-      headers                 = ["Origin"]
-
-      cookies {
-        forward = "all"
-      }
-    }
+    cache_policy_id          = aws_cloudfront_cache_policy.no_cache
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.forward_custom_headers_and_cookies
 
     lambda_function_association {
-      event_type = "viewer-request"
+      event_type = "origin-request"
       lambda_arn = module.authorizer_lambda.function_qualified_arn
     }
 
     viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
     compress               = true
   }
 
@@ -245,4 +246,30 @@ resource "aws_cloudfront_distribution" "main" {
     response_code      = 404
     response_page_path = "/404.html"
   }
+}
+
+resource "aws_cloudfront_cache_policy" "no_cache" {
+  name = "no-cache-policy"
+
+  default_ttl = 0
+  max_ttl     = 0
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config { cookie_behavior = "none" }
+    headers_config { header_behavior = "none" }
+    query_strings_config { query_string_behavior = "none" }
+  }
+}
+
+resource "aws_cloudfront_origin_request_policy" "forward_custom_headers_and_cookies" {
+  name = "forward-custom-headers-and-cookies"
+  cookies_config { cookie_behavior = "all" }
+
+  headers_config {
+    header_behavior = "whitelist"
+    headers { items = ["x-user-pool-id", "x-user-pool-client-id"] }
+  }
+
+  query_strings_config { query_string_behavior = "none" }
 }
