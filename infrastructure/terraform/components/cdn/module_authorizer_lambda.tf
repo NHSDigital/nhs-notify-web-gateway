@@ -5,8 +5,6 @@ module "authorizer_lambda" {
     aws = aws.us-east-1
   }
 
-  depends_on = [local_file.authorizer_cognito_config]
-
   function_name = "authorizer"
   description   = "Download authorizer"
 
