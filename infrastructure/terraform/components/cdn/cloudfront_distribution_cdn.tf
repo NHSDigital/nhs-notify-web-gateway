@@ -83,8 +83,8 @@ resource "aws_cloudfront_distribution" "main" {
 
     target_origin_id = "poc"
 
-    cache_policy_id          = aws_cloudfront_cache_policy.no_cache
-    origin_request_policy_id = aws_cloudfront_origin_request_policy.forward_custom_headers_and_cookies
+    cache_policy_id          = aws_cloudfront_cache_policy.no_cache.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.forward_custom_headers_and_cookies.id
 
     lambda_function_association {
       event_type = "origin-request"
