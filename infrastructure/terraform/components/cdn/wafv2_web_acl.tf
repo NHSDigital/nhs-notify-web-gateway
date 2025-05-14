@@ -86,12 +86,80 @@ resource "aws_wafv2_web_acl" "main" {
             count {}
           }
         }
+        rule_action_override {
+          name = "SizeRestrictions_BODY"
+          action_to_use {
+            count {}
+          }
+        }
       }
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.csi}_waf_aws_managed_common"
       sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "BlockOversizedBodyOutsideUpload"
+    priority = 35
+
+    action {
+      block {}
+    }
+
+    statement {
+
+      and_statement {
+        statement {
+          label_match_statement {
+            scope = "LABEL"
+            key   = "awswaf:managed:aws:core-rule-set:SizeRestrictions_Body"
+          }
+        }
+        statement {
+          or_statement {
+            statement {
+              not_statement {
+                statement {
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    # only uri to allow >8kb body is /templates(~<dynamic environment>)/<create|edit>-letter-template(/<id>)
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
+              }
+            }
+            statement {
+              size_constraint_statement {
+                comparison_operator = "GT"
+                field_to_match {
+                  body {}
+                }
+                # 6MB lambda payload limit
+                size = 6291456
+                text_transformation {
+                  priority = 10
+                  type     = "NONE"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      sampled_requests_enabled   = true
+      metric_name                = "${local.csi}_body_size_restriction"
     }
   }
 
