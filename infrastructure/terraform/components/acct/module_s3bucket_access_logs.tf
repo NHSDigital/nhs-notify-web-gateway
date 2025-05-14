@@ -1,10 +1,14 @@
 module "s3bucket_access_logs" {
   source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket?ref=v1.0.8"
 
+  providers = {
+    aws = aws.us-east-1
+  }
+
   name = "access-logs"
 
   aws_account_id = var.aws_account_id
-  region         = var.region
+  region         = "us-east-1"
   project        = var.project
   environment    = var.environment
   component      = var.component
@@ -92,7 +96,7 @@ data "aws_iam_policy_document" "s3bucket_access_logs" {
     ]
 
     resources = [
-      module.s3bucket_lambda_artefacts.arn,
+      module.s3bucket_access_logs.arn,
     ]
 
     principals {
@@ -112,7 +116,7 @@ data "aws_iam_policy_document" "s3bucket_access_logs" {
     ]
 
     resources = [
-      "${module.s3bucket_lambda_artefacts.arn}/*",
+      "${module.s3bucket_access_logs.arn}/*",
     ]
 
     principals {
