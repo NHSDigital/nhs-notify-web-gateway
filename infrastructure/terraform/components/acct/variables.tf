@@ -67,3 +67,9 @@ variable "observability_account_id" {
   type        = string
   description = "The Observability Account ID that needs access"
 }
+
+variable "oam_sink_id" {
+  description = "The ID of the Cloudwatch OAM sink in the appropriate observability account."
+  type        = string
+  default     = ""
+}

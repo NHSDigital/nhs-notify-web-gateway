@@ -20,3 +20,7 @@ output "s3_buckets" {
     }
   }
 }
+
+output "log_subscription_role_arn" {
+  value = module.obs_datasource.log_subscription_role_arn
+}
