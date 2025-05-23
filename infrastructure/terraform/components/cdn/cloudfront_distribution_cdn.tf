@@ -117,9 +117,8 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   origin {
-    domain_name = "files.miha12.templates.dev.nhsnotify.national.nhs.uk"
-    # domain_name = var.template_files_origin.domain_name
-    origin_id = "${local.csi}-template-files"
+    domain_name = var.template_files_origin.domain_name
+    origin_id   = "${local.csi}-template-files"
 
     custom_origin_config {
       http_port              = 80
