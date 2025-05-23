@@ -116,6 +116,36 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
+  origin {
+    domain_name = "files.miha12.templates.dev.nhsnotify.national.nhs.uk"
+    # domain_name = var.template_files_origin.domain_name
+    origin_id = "${local.csi}-template-files"
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = [
+        "TLSv1.2"
+      ]
+    }
+  }
+
+  ordered_cache_behavior {
+    path_pattern             = "templates/files/*"
+    target_origin_id         = "${local.csi}-template-files"
+    allowed_methods          = ["GET", "HEAD", "OPTIONS"]
+    cached_methods           = ["GET", "HEAD"]
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.forward_cookies.id
+    viewer_protocol_policy   = "redirect-to-https"
+
+    lambda_function_association {
+      event_type = "origin-request"
+      lambda_arn = module.lambda_rewrite_origin_template_file_requests.function_qualified_arn
+    }
+  }
+
   # Routes to account for branches like /auth~mybranch123
   dynamic "ordered_cache_behavior" {
     for_each = var.amplify_microservice_routes
@@ -194,9 +224,22 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
+
+
   custom_error_response {
     error_code         = 404
     response_code      = 404
     response_page_path = "/404.html"
   }
+}
+
+data "aws_cloudfront_cache_policy" "caching_disabled" {
+  name = "Managed-CachingDisabled"
+}
+
+resource "aws_cloudfront_origin_request_policy" "forward_cookies" {
+  name = "${local.csi}-forward-cookies"
+  cookies_config { cookie_behavior = "all" }
+  headers_config { header_behavior = "none" }
+  query_strings_config { query_string_behavior = "none" }
 }
