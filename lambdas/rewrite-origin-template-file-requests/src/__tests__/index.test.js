@@ -2,23 +2,15 @@ const { handler } = require("../index");
 
 describe("template file download origin request rewrite", () => {
   test("it strips the leading /templates/files from the request uri forwarded to the origin", () => {
-    const cb = jest.fn();
     const event = {
-      Records: [
-        {
-          cf: {
-            request: {
-              uri: "/templates/files/owner-id/example.txt",
-            },
-          },
-        },
-      ],
+      request: {
+        uri: "/templates/files/owner-id/example.txt",
+      },
     };
 
-    handler(event, {}, cb);
+    const response = handler(event);
 
-    expect(cb).toHaveBeenCalledWith(
-      null,
+    expect(response).toEqual(
       expect.objectContaining({
         uri: "/owner-id/example.txt",
       })
@@ -26,23 +18,15 @@ describe("template file download origin request rewrite", () => {
   });
 
   test("it does not modify requests where the uri does not match", () => {
-    const cb = jest.fn();
     const event = {
-      Records: [
-        {
-          cf: {
-            request: {
-              uri: "/foo/bar/owner-id/example.txt",
-            },
-          },
-        },
-      ],
+      request: {
+        uri: "/foo/bar/owner-id/example.txt",
+      },
     };
 
-    handler(event, {}, cb);
+    const response = handler(event);
 
-    expect(cb).toHaveBeenCalledWith(
-      null,
+    expect(response).toEqual(
       expect.objectContaining({
         uri: "/foo/bar/owner-id/example.txt",
       })
