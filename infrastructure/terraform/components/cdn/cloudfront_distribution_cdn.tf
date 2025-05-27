@@ -140,7 +140,7 @@ resource "aws_cloudfront_distribution" "main" {
     viewer_protocol_policy   = "redirect-to-https"
 
     function_association {
-      event_type   = "origin-request"
+      event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.rewrite_origin_template_file_requests.arn
     }
   }
