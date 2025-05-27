@@ -39,7 +39,6 @@
 |------|--------|---------|
 | <a name="module_kms"></a> [kms](#module\_kms) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/kms | v1.0.8 |
 | <a name="module_lambda_rewrite_origin_branch_requests"></a> [lambda\_rewrite\_origin\_branch\_requests](#module\_lambda\_rewrite\_origin\_branch\_requests) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.9 |
-| <a name="module_lambda_rewrite_origin_template_file_requests"></a> [lambda\_rewrite\_origin\_template\_file\_requests](#module\_lambda\_rewrite\_origin\_template\_file\_requests) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v2.0.6 |
 | <a name="module_lambda_rewrite_viewer_trailing_slashes"></a> [lambda\_rewrite\_viewer\_trailing\_slashes](#module\_lambda\_rewrite\_viewer\_trailing\_slashes) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda | v1.0.9 |
 | <a name="module_s3bucket_cf_logs"></a> [s3bucket\_cf\_logs](#module\_s3bucket\_cf\_logs) | git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/s3bucket | v1.0.9 |
 ## Outputs

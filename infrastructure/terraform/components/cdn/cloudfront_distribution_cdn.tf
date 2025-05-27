@@ -139,9 +139,9 @@ resource "aws_cloudfront_distribution" "main" {
     origin_request_policy_id = aws_cloudfront_origin_request_policy.forward_cookies.id
     viewer_protocol_policy   = "redirect-to-https"
 
-    lambda_function_association {
-      event_type = "origin-request"
-      lambda_arn = module.lambda_rewrite_origin_template_file_requests.function_qualified_arn
+    function_association {
+      event_type   = "origin-request"
+      function_arn = aws_cloudfront_function.rewrite_origin_template_file_requests.arn
     }
   }
 
