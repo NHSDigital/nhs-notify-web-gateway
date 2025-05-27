@@ -31,7 +31,7 @@
 | <a name="input_parent_acct_environment"></a> [parent\_acct\_environment](#input\_parent\_acct\_environment) | Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments | `string` | `"main"` | no |
 | <a name="input_project"></a> [project](#input\_project) | The name of the tfscaffold project | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The AWS Region | `string` | n/a | yes |
-| <a name="input_template_files_origin"></a> [template\_files\_origin](#input\_template\_files\_origin) | Configuration for template file download origin | <pre>object({<br/>    domain_name = string<br/>  })</pre> | n/a | yes |
+| <a name="input_template_files_origin_domain_name"></a> [template\_files\_origin\_domain\_name](#input\_template\_files\_origin\_domain\_name) | Domain name for template file download origin | `string` | n/a | yes |
 | <a name="input_waf_rate_limit_cdn"></a> [waf\_rate\_limit\_cdn](#input\_waf\_rate\_limit\_cdn) | The rate limit is the maximum number of CDN requests from a single IP address that are allowed in a five-minute period | `number` | `20000` | no |
 ## Modules
 
