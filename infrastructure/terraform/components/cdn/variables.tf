@@ -130,11 +130,9 @@ variable "cms_origin" {
   }
 }
 
-variable "template_files_origin" {
-  type = object({
-    domain_name = string
-  })
-  description = "Configuration for template file download origin"
+variable "template_files_origin_domain_name" {
+  type        = string
+  description = "Domain name for template file download origin"
 }
 
 variable "observability_account_id" {

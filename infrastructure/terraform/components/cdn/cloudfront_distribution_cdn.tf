@@ -117,7 +117,7 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   origin {
-    domain_name = var.template_files_origin.domain_name
+    domain_name = var.template_files_origin_domain_name
     origin_id   = "${local.csi}-template-files"
 
     custom_origin_config {
