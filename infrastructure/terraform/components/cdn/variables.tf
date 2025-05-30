@@ -99,7 +99,7 @@ variable "amplify_microservice_routes" {
     service_csi     = string,
     root_dns_record = string,
   }))
-  description = "An object representing the amplify microservice routing configration"
+  description = "An object representing the amplify microservice routing configuration"
   default     = []
 }
 
@@ -122,12 +122,17 @@ variable "cms_origin" {
     origin_path = string,
     origin_id   = string
   })
-  description = "Object to specifiy static domains for CDN"
+  description = "Object to specify static domains for CDN"
   default = {
     domain_name = "nhsdigital.github.io"
     origin_path = "/nhs-notify-web-cms-dev"
     origin_id   = "github-nhs-notify-web-cms"
   }
+}
+
+variable "template_files_origin_domain_name" {
+  type        = string
+  description = "Domain name for template file download origin"
 }
 
 variable "observability_account_id" {
