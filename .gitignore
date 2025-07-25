@@ -6,11 +6,19 @@
 *vulnerabilities*report*.json
 *report*json.zip
 .version
-
+version.json
 *.code-workspace
 !project.code-workspace
 
 # Please, add your custom content below!
 
-#plugin-cache
-plugin-cache/
+# dependencies
+node_modules
+.node-version
+*/node_modules
+/.pnp
+.pnp.js
+/build
+dist
+.DS_Store
+.reports
