@@ -81,6 +81,12 @@ variable "parent_acct_environment" {
   default     = "main"
 }
 
+variable "shared_infra_account_id" {
+  type        = string
+  description = "The AWS Account ID of the shared infrastructure account"
+  default     = "000000000000"
+}
+
 variable "force_lambda_code_deploy" {
   type        = bool
   description = "If the lambda package in s3 has the same commit id tag as the terraform build branch, the lambda will not update automatically. Set to True if making changes to Lambda code from on the same commit for example during development"
@@ -133,9 +139,4 @@ variable "cms_origin" {
 variable "template_files_origin_domain_name" {
   type        = string
   description = "Domain name for template file download origin"
-}
-
-variable "observability_account_id" {
-  type        = string
-  description = "The Observability Account ID that needs access"
 }
