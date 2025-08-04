@@ -22,7 +22,7 @@ module "lambda_rewrite_origin_branch_requests" {
     body = data.aws_iam_policy_document.lambda_rewrite_origin_branch_requests.json
   }
 
-  function_s3_bucket      = local.acct.s3_buckets["lambda_function_artefacts"]["id"]
+  function_s3_bucket      = local.acct.s3_buckets["lambda_function_artefacts_us"]["id"]
   function_code_base_path = local.aws_lambda_functions_dir_path
   function_code_dir       = "rewrite-origin-branch-requests/src"
   function_include_common = true

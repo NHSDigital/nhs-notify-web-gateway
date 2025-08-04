@@ -1,6 +1,6 @@
 resource "aws_route53_record" "alias_A" {
   name    = local.root_domain_name
-  zone_id = local.acct.dns_zone["id"]
+  zone_id = local.root_domain_id
   type    = "A"
 
   alias {
@@ -12,7 +12,7 @@ resource "aws_route53_record" "alias_A" {
 
 resource "aws_route53_record" "alias_AAAA" {
   name    = local.root_domain_name
-  zone_id = local.acct.dns_zone["id"]
+  zone_id = local.root_domain_id
   type    = "AAAA"
 
   alias {
