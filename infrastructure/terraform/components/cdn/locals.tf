@@ -19,4 +19,3 @@ locals {
     "504" : { error_code : 504, response_page_path : "/error/400", response_code : "504" },
   }
 }
-
