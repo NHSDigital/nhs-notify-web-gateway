@@ -93,6 +93,12 @@ variable "force_lambda_code_deploy" {
   default     = false
 }
 
+variable "force_s3_destroy" {
+  type        = bool
+  description = "Flag to force deletion of S3 buckets"
+  default     = false
+}
+
 variable "waf_rate_limit_cdn" {
   type        = number
   description = "The rate limit is the maximum number of CDN requests from a single IP address that are allowed in a five-minute period"
