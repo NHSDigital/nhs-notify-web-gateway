@@ -132,8 +132,8 @@ resource "aws_wafv2_web_acl" "main" {
                     field_to_match {
                       uri_path {}
                     }
-                    # only uri to allow >8kb body is /templates(~<dynamic environment>)/<create|edit>-letter-template(/<id>)
-                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    # only uri to allow >8kb body is /templates(~<dynamic environment>)/<upload|edit>-letter-template(/<id>)
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(upload|edit)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
