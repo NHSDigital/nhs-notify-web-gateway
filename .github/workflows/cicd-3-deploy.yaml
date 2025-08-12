@@ -58,7 +58,7 @@ jobs:
       deploy_environment: ${{ steps.variables.outputs.deploy_environment }}
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: "Set CI/CD variables"
         id: variables
         run: |
@@ -114,7 +114,7 @@ jobs:
       CI_PIPELINE_IID: ${{ needs.metadata.outputs.ci_pipeline_iid }}
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
