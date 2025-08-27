@@ -143,6 +143,8 @@ resource "aws_cloudfront_distribution" "main" {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.rewrite_origin_template_file_requests.arn
     }
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
   }
 
   # Routes to account for branches like /auth~mybranch123

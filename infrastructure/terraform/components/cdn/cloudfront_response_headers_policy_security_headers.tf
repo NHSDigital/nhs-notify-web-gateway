@@ -14,6 +14,10 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
       # this header is deprecated
       header = "x-xss-protection"
     }
+    items {
+      # https://www.zaproxy.org/docs/alerts/10036/
+      header = "server"
+    }
   }
 
   security_headers_config {
