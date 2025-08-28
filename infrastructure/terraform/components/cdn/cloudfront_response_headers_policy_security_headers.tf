@@ -14,9 +14,23 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
       # this header is deprecated
       header = "x-xss-protection"
     }
+
+    # s3 related
     items {
       # https://www.zaproxy.org/docs/alerts/10036/
       header = "server"
+    }
+    items {
+      header = "x-amz-server-side-encryption"
+    }
+    items {
+      header = "x-amz-server-side-encryption-aws-kms-key-id"
+    }
+    items {
+      header = "x-amz-server-side-encryption-bucket-key-enabled"
+    }
+    items {
+      header = "x-amz-version-id"
     }
   }
 
