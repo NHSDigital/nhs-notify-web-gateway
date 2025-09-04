@@ -1,5 +1,5 @@
 locals {
-  acct      = data.terraform_remote_state.acct.outputs
+  acct = data.terraform_remote_state.acct.outputs
 }
 
 data "terraform_remote_state" "acct" {
