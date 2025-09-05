@@ -19,5 +19,5 @@ locals {
     "504" : { error_code : 504, response_page_path : "/error/400", response_code : "504" },
   }
 
-  destination_arn_us = "arn:aws:logs:us-east-1:${var.shared_infra_account_id}:destination:nhs-main-obs-firehose-logs"
+  destination_arn_us = "arn:aws:logs:us-east-1:${var.shared_infra_account_id}:destination:nhs-main-obs-us-east-1-firehose-logs"
 }
