@@ -1,5 +1,5 @@
 module "lambda_rewrite_viewer_trailing_slashes" {
-  source = "git::https://github.com/NHSDigital/nhs-notify-shared-modules.git//infrastructure/modules/lambda?ref=v1.0.9"
+  source = "https://github.com/NHSDigital/nhs-notify-shared-modules/releases/download/v2.0.20/terraform-lambda.zip"
 
   providers = {
     aws = aws.us-east-1
@@ -36,6 +36,10 @@ module "lambda_rewrite_viewer_trailing_slashes" {
 
   force_lambda_code_deploy = var.force_lambda_code_deploy
   enable_lambda_insights   = false
+
+  send_to_firehose          = true
+  log_destination_arn       = local.destination_arn_us
+  log_subscription_role_arn = local.acct.log_subscription_role_arn
 }
 
 data "aws_iam_policy_document" "lambda_rewrite_viewer_trailing_slashes" {
