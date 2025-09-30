@@ -269,7 +269,7 @@ resource "aws_wafv2_web_acl" "main" {
 
   rule {
     name     = "BlockSQLInjectionOutsideUpload"
-    priority = 45
+    priority = 42
 
     action {
       block {}
