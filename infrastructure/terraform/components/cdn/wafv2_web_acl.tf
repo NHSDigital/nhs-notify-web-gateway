@@ -262,8 +262,53 @@ resource "aws_wafv2_web_acl" "main" {
   }
 
   rule {
+    name     = "AWSManagedRulesKnownBadInputsRuleSet"
+    priority = 45
+    override_action {
+      none {}
+    }
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesKnownBadInputsRuleSet"
+        vendor_name = "AWS"
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.csi}_waf_aws_managed_input"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "AWSManagedRulesSQLiRuleSet"
+    priority = 50
+    override_action {
+      none {}
+    }
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesSQLiRuleSet"
+        vendor_name = "AWS"
+
+        rule_action_override {
+          name = "SQLi_BODY"
+          action_to_use {
+            count {}
+          }
+        }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.csi}_waf_aws_managed_sql"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
     name     = "BlockSQLInjectionOutsideUpload"
-    priority = 42
+    priority = 55
 
     action {
       block {}
@@ -272,7 +317,7 @@ resource "aws_wafv2_web_acl" "main" {
     statement {
       and_statement {
         statement {
-          # Check if it has been flagged as XSS
+          # Check if it has been flagged as SQL Injection
           label_match_statement {
             scope = "LABEL"
             key   = "awswaf:managed:aws:sql-database:SQLi_Body"
@@ -351,51 +396,6 @@ resource "aws_wafv2_web_acl" "main" {
       cloudwatch_metrics_enabled = true
       sampled_requests_enabled   = true
       metric_name                = "${local.csi}_sqli_restriction"
-    }
-  }
-
-  rule {
-    name     = "AWSManagedRulesKnownBadInputsRuleSet"
-    priority = 45
-    override_action {
-      none {}
-    }
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesKnownBadInputsRuleSet"
-        vendor_name = "AWS"
-      }
-    }
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.csi}_waf_aws_managed_input"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  rule {
-    name     = "AWSManagedRulesSQLiRuleSet"
-    priority = 50
-    override_action {
-      none {}
-    }
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesSQLiRuleSet"
-        vendor_name = "AWS"
-
-        rule_action_override {
-          name = "SQLi_BODY"
-          action_to_use {
-            count {}
-          }
-        }
-      }
-    }
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.csi}_waf_aws_managed_sql"
-      sampled_requests_enabled   = true
     }
   }
 
