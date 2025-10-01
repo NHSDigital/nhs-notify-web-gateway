@@ -290,12 +290,112 @@ resource "aws_wafv2_web_acl" "main" {
       managed_rule_group_statement {
         name        = "AWSManagedRulesSQLiRuleSet"
         vendor_name = "AWS"
+
+        rule_action_override {
+          name = "SQLi_BODY"
+          action_to_use {
+            count {}
+          }
+        }
       }
     }
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.csi}_waf_aws_managed_sql"
       sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "BlockSQLInjectionOutsideUpload"
+    priority = 55
+
+    action {
+      block {}
+    }
+
+    statement {
+      and_statement {
+        statement {
+          # Check if it has been flagged as SQL Injection
+          label_match_statement {
+            scope = "LABEL"
+            key   = "awswaf:managed:aws:sql-database:SQLi_Body"
+          }
+        }
+        statement {
+          # Block unless all PDF upload conditions are met
+          not_statement {
+            statement {
+              and_statement {
+                statement {
+                  # check it's the create/edit letters endpoint
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if it's a multipart form upload
+                  byte_match_statement {
+                    field_to_match {
+                      single_header {
+                        name = "content-type"
+                      }
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "multipart/form-data"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the multi-part request contains a PDF content-type
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "Content-Type: application/pdf"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the body has a pdf signature (magic bytes check)
+                  # Note: some PDF (rarely) may not contain %PDF- this will prevent those files from being uploaded.
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "%PDF-"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      sampled_requests_enabled   = true
+      metric_name                = "${local.csi}_sqli_restriction"
     }
   }
 
