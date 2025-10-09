@@ -128,11 +128,39 @@ variable "cms_origin" {
     origin_path = string,
     origin_id   = string
   })
-  description = "Object to specify static domains for CDN"
+  description = "Object to specify static domains for CMS"
   default = {
     domain_name = "nhsdigital.github.io"
     origin_path = "/nhs-notify-web-cms-dev"
     origin_id   = "github-nhs-notify-web-cms"
+  }
+}
+
+variable "schemas_origin" {
+  type = object({
+    domain_name = string,
+    origin_path = string,
+    origin_id   = string
+  })
+  description = "Object to specify static domains for Schemas"
+  default = {
+    domain_name = "nhsdigital.github.io"
+    origin_path = "/nhs-notify-standards/"
+    origin_id   = "github-nhs-notify-schemas"
+  }
+}
+
+variable "digital_letters_origin" {
+  type = object({
+    domain_name = string,
+    origin_path = string,
+    origin_id   = string
+  })
+  description = "Object to specify static domains for Digital Letters Schemas"
+  default = {
+    domain_name = "nhsdigital.github.io"
+    origin_path = "/nhs-notify-digital-letters/schemas"
+    origin_id   = "github-nhs-notify-digital-letters"
   }
 }
 
