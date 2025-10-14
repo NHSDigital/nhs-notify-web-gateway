@@ -241,9 +241,24 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
-  # Github Schemas behaviour
+  # Digital-Letters origin
+  origin {
+    domain_name = var.digital_letters_origin.domain_name
+    origin_path = var.digital_letters_origin.origin_path
+    origin_id   = var.digital_letters_origin.origin_id
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = [
+        "TLSv1.2"
+      ]
+    }
+  }
+
   ordered_cache_behavior {
-    path_pattern = "/schema/events"
+    path_pattern = "/cloudevents/schemas/digital-letters/*.schema.json"
     allowed_methods = [
       "GET",
       "HEAD",
@@ -252,7 +267,7 @@ resource "aws_cloudfront_distribution" "main" {
       "GET",
       "HEAD",
     ]
-    target_origin_id = "github-nhs-notify-schemas"
+    target_origin_id = "github-nhs-notify-digital-letters"
 
     forwarded_values {
       query_string = false
@@ -277,26 +292,8 @@ resource "aws_cloudfront_distribution" "main" {
     response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
   }
 
-  # Schemas Digital Letters origin
-  origin {
-    domain_name = var.digital_letters_origin.domain_name
-    origin_path = var.digital_letters_origin.origin_path
-    origin_id   = var.digital_letters_origin.origin_id
-
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols = [
-        "TLSv1.2"
-      ]
-    }
-  }
-
-
-  # Github Schemas Digital Letters behaviour
   ordered_cache_behavior {
-    path_pattern = "/schema/events/digital-letters"
+    path_pattern = "/cloudevents/schemas/*.schema.json"
     allowed_methods = [
       "GET",
       "HEAD",
@@ -305,7 +302,7 @@ resource "aws_cloudfront_distribution" "main" {
       "GET",
       "HEAD",
     ]
-    target_origin_id = "github-nhs-notify-digital-letters"
+    target_origin_id = "github-nhs-notify-schemas"
 
     forwarded_values {
       query_string = false

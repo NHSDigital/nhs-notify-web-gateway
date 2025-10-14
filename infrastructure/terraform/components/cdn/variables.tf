@@ -145,7 +145,7 @@ variable "schemas_origin" {
   description = "Object to specify static domains for Schemas"
   default = {
     domain_name = "nhsdigital.github.io"
-    origin_path = "/nhs-notify-standards/"
+    origin_path = "/nhs-notify-standards"
     origin_id   = "github-nhs-notify-schemas"
   }
 }
@@ -159,7 +159,7 @@ variable "digital_letters_origin" {
   description = "Object to specify static domains for Digital Letters Schemas"
   default = {
     domain_name = "nhsdigital.github.io"
-    origin_path = "/nhs-notify-digital-letters/schemas"
+    origin_path = "/nhs-notify-digital-letters"
     origin_id   = "github-nhs-notify-digital-letters"
   }
 }
