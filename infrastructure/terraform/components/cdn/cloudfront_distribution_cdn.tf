@@ -258,7 +258,7 @@ resource "aws_cloudfront_distribution" "main" {
   }
 
   ordered_cache_behavior {
-    path_pattern = "/cloudevents/schemas/digital-letters/*.schema.json"
+    path_pattern = "/schemas/*/*.doc.html"
     allowed_methods = [
       "GET",
       "HEAD",
