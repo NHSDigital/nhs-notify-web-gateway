@@ -93,6 +93,12 @@ variable "force_lambda_code_deploy" {
   default     = false
 }
 
+variable "force_destroy" {
+  type        = bool
+  description = "Flag to force deletion of S3 buckets"
+  default     = false
+}
+
 variable "waf_rate_limit_cdn" {
   type        = number
   description = "The rate limit is the maximum number of CDN requests from a single IP address that are allowed in a five-minute period"
@@ -128,11 +134,39 @@ variable "cms_origin" {
     origin_path = string,
     origin_id   = string
   })
-  description = "Object to specify static domains for CDN"
+  description = "Object to specify static domains for CMS"
   default = {
     domain_name = "nhsdigital.github.io"
     origin_path = "/nhs-notify-web-cms-dev"
     origin_id   = "github-nhs-notify-web-cms"
+  }
+}
+
+variable "schemas_origin" {
+  type = object({
+    domain_name = string,
+    origin_path = string,
+    origin_id   = string
+  })
+  description = "Object to specify static domains for Schemas"
+  default = {
+    domain_name = "nhsdigital.github.io"
+    origin_path = "/nhs-notify-standards"
+    origin_id   = "github-nhs-notify-schemas"
+  }
+}
+
+variable "digital_letters_origin" {
+  type = object({
+    domain_name = string,
+    origin_path = string,
+    origin_id   = string
+  })
+  description = "Object to specify static domains for Digital Letters Schemas"
+  default = {
+    domain_name = "nhsdigital.github.io"
+    origin_path = "/nhs-notify-digital-letters"
+    origin_id   = "github-nhs-notify-digital-letters"
   }
 }
 

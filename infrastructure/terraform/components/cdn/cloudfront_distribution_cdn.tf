@@ -225,6 +225,108 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
+  # Schemas origin
+  origin {
+    domain_name = var.schemas_origin.domain_name
+    origin_path = var.schemas_origin.origin_path
+    origin_id   = var.schemas_origin.origin_id
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = [
+        "TLSv1.2"
+      ]
+    }
+  }
+
+  # Digital-Letters origin
+  origin {
+    domain_name = var.digital_letters_origin.domain_name
+    origin_path = var.digital_letters_origin.origin_path
+    origin_id   = var.digital_letters_origin.origin_id
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols = [
+        "TLSv1.2"
+      ]
+    }
+  }
+
+  ordered_cache_behavior {
+    path_pattern = "/cloudevents/schemas/digital-letters/*.schema.json"
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    target_origin_id = "github-nhs-notify-digital-letters"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    lambda_function_association {
+      event_type = "viewer-response"
+      lambda_arn = module.lambda_rewrite_viewer_trailing_slashes.function_qualified_arn
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern = "/cloudevents/schemas/*.schema.json"
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    target_origin_id = "github-nhs-notify-schemas"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    lambda_function_association {
+      event_type = "viewer-response"
+      lambda_arn = module.lambda_rewrite_viewer_trailing_slashes.function_qualified_arn
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers.id
+  }
+
   custom_error_response {
     error_code         = 404
     response_code      = 404
