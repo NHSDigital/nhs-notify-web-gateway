@@ -63,12 +63,6 @@ variable "log_level" {
   default     = "INFO"
 }
 
-variable "enable_github_actions_ip_access" {
-  type        = bool
-  description = "Should the Github actions runner IP addresses be permitted access to this distribution. This should not be enabled in production environments"
-  default     = false
-}
-
 variable "log_retention_in_days" {
   type        = number
   description = "The retention period in days for the Cloudwatch Logs events to be retained, default of 0 is indefinite"

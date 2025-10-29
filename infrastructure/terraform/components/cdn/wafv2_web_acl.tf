@@ -9,38 +9,34 @@ resource "aws_wafv2_web_acl" "main" {
     allow {}
   }
 
-  dynamic "rule" {
-    for_each = var.enable_github_actions_ip_access ? [1] : []
+  rule {
+    name     = "GithubActionsIPRestriction"
+    priority = 10
 
-    content {
-      name     = "GithubActionsIPRestriction"
-      priority = 10
+    action {
+      allow {}
+    }
 
-      action {
-        allow {}
-      }
-
-      statement {
-        or_statement {
-          statement {
-            ip_set_reference_statement {
-              arn = aws_wafv2_ip_set.github_actions_ipv4[0].arn
-            }
+    statement {
+      or_statement {
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.github_actions_ipv4.arn
           }
+        }
 
-          statement {
-            ip_set_reference_statement {
-              arn = aws_wafv2_ip_set.github_actions_ipv6[0].arn
-            }
+        statement {
+          ip_set_reference_statement {
+            arn = aws_wafv2_ip_set.github_actions_ipv6.arn
           }
         }
       }
+    }
 
-      visibility_config {
-        metric_name                = "${local.csi}_gha_ip_restrictions_metric"
-        cloudwatch_metrics_enabled = true
-        sampled_requests_enabled   = true
-      }
+    visibility_config {
+      metric_name                = "${local.csi}_gha_ip_restrictions_metric"
+      cloudwatch_metrics_enabled = true
+      sampled_requests_enabled   = true
     }
   }
 
