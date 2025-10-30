@@ -59,6 +59,6 @@ jobs:
             --releaseVersion "main" \
             --targetWorkflow "dispatch-deploy-static-notify-cdn-env.yaml" \
             --targetEnvironment "main" \
-            --targetAccountGroup "nhs-notify-dns-dev" \
+            --targetAccountGroup "nhs-notify-web-dev" \
             --targetComponent "${{ matrix.component }}" \
             --terraformAction "apply"
