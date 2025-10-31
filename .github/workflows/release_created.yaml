@@ -31,8 +31,8 @@ jobs:
         run: |
           bash .github/scripts/dispatch_internal_repo_workflow.sh \
             --releaseVersion "main" \
-            --targetWorkflow "dispatch-deploy-static-notify-cdn-env.yaml" \
+            --targetWorkflow "dispatch-deploy-static-notify-web-gateway.yaml" \
             --targetEnvironment "main" \
-            --targetAccountGroup "nhs-notify-web-dev" \
+            --targetAccountGroup "nhs-notify-web-nonprod" \
             --targetComponent "${{ matrix.component }}" \
             --terraformAction "apply"
