@@ -164,6 +164,7 @@ jobs:
       - name: "Trivy IaC Scan"
         uses: ./.github/actions/trivy-iac
   trivy-package:
+    if: ${{ !inputs.skip_trivy_package }}
     name: "Trivy Package Scan"
     permissions:
       contents: read
