@@ -17,4 +17,6 @@ provider "aws" {
   }
 }
 
-provider "github" {}
+provider "github" {
+  owner = "NHSDigital"
+}
