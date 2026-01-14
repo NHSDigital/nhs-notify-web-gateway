@@ -164,6 +164,20 @@ variable "digital_letters_origin" {
   }
 }
 
+variable "supplier_api_origin" {
+  type = object({
+    domain_name = string,
+    origin_path = string,
+    origin_id   = string
+  })
+  description = "Object to specify static domains for Supplier API Schemas"
+  default = {
+    domain_name = "nhsdigital.github.io"
+    origin_path = "/nhs-notify-supplier-api"
+    origin_id   = "github-nhs-notify-supplier-api"
+  }
+}
+
 variable "template_files_origin_domain_name" {
   type        = string
   description = "Domain name for template file download origin"
