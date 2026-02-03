@@ -28,7 +28,7 @@ module "lambda_rewrite_origin_branch_requests" {
   function_include_common = true
   function_module_name    = "index"
   handler_function_name   = "handler"
-  runtime                 = "nodejs20.x"
+  runtime                 = "nodejs22.x"
   memory                  = 128
   timeout                 = 5
   log_level               = var.log_level
