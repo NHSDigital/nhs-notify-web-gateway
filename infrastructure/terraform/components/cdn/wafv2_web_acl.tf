@@ -139,23 +139,6 @@ resource "aws_wafv2_web_acl" "main" {
               }
             }
             statement {
-              not_statement {
-                statement {
-                  regex_match_statement {
-                    field_to_match {
-                      uri_path {}
-                    }
-                    # DOCX upload paths
-                    regex_string = "^\\/templates\\/upload\\-(standard\\-english|large\\-print|other\\-language)\\-letter\\-template$"
-                    text_transformation {
-                      priority = 10
-                      type     = "NONE"
-                    }
-                  }
-                }
-              }
-            }
-            statement {
               size_constraint_statement {
                 comparison_operator = "GT"
                 field_to_match {
@@ -182,7 +165,7 @@ resource "aws_wafv2_web_acl" "main" {
   }
 
   rule {
-    name     = "BlockCrossSiteScriptingOutsidePDFUpload"
+    name     = "BlockCrossSiteScriptingOutsideUpload"
     priority = 40
 
     action {
@@ -199,23 +182,23 @@ resource "aws_wafv2_web_acl" "main" {
           }
         }
         statement {
-          # Check this is a PDF upload path
-          regex_match_statement {
-            field_to_match {
-              uri_path {}
-            }
-            regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
-            text_transformation {
-              priority = 10
-              type     = "NONE"
-            }
-          }
-        }
-        statement {
-          # Block unless all PDF upload validation passes
+          # Block unless all PDF upload conditions are met
           not_statement {
             statement {
               and_statement {
+                statement {
+                  # check it's the create/edit letters endpoint
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
                 statement {
                   # Check if it's a multipart form upload
                   byte_match_statement {
@@ -270,100 +253,7 @@ resource "aws_wafv2_web_acl" "main" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       sampled_requests_enabled   = true
-      metric_name                = "${local.csi}_pdf_restriction"
-    }
-  }
-
-  rule {
-    name     = "BlockCrossSiteScriptingOutsideDOCXUpload"
-    priority = 41
-
-    action {
-      block {}
-    }
-
-    statement {
-      and_statement {
-        statement {
-          # Check if it has been flagged as XSS
-          label_match_statement {
-            scope = "LABEL"
-            key   = "awswaf:managed:aws:core-rule-set:CrossSiteScripting_Body"
-          }
-        }
-        statement {
-          # Check this is a DOCX upload path
-          regex_match_statement {
-            field_to_match {
-              uri_path {}
-            }
-            regex_string = "^\\/templates\\/upload\\-(standard\\-english|large\\-print|other\\-language)\\-letter\\-template$"
-            text_transformation {
-              priority = 10
-              type     = "NONE"
-            }
-          }
-        }
-        statement {
-          # Block unless all DOCX upload validation passes
-          not_statement {
-            statement {
-              and_statement {
-                statement {
-                  # Check if it's a multipart form upload
-                  byte_match_statement {
-                    field_to_match {
-                      single_header {
-                        name = "content-type"
-                      }
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = "multipart/form-data"
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-                statement {
-                  # Check if the multi-part request contains a DOCX content-type
-                  byte_match_statement {
-                    field_to_match {
-                      body {}
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = "Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-                statement {
-                  # Check if the body has a DOCX/ZIP signature (magic bytes check)
-                  # PK\x03\x04 is the ZIP local file header signature used by DOCX files
-                  byte_match_statement {
-                    field_to_match {
-                      body {}
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = base64decode("UEsDBA==")
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      sampled_requests_enabled   = true
-      metric_name                = "${local.csi}_xss_docx_restriction"
+      metric_name                = "${local.csi}_xss_restriction"
     }
   }
 
@@ -413,7 +303,7 @@ resource "aws_wafv2_web_acl" "main" {
   }
 
   rule {
-    name     = "BlockSQLInjectionOutsidePDFUpload"
+    name     = "BlockSQLInjectionOutsideUpload"
     priority = 55
 
     action {
@@ -430,23 +320,23 @@ resource "aws_wafv2_web_acl" "main" {
           }
         }
         statement {
-          # Check this is a PDF upload path
-          regex_match_statement {
-            field_to_match {
-              uri_path {}
-            }
-            regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
-            text_transformation {
-              priority = 10
-              type     = "NONE"
-            }
-          }
-        }
-        statement {
-          # Block unless all PDF upload validation passes
+          # Block unless all PDF upload conditions are met
           not_statement {
             statement {
               and_statement {
+                statement {
+                  # check it's the create/edit letters endpoint
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
                 statement {
                   # Check if it's a multipart form upload
                   byte_match_statement {
@@ -502,99 +392,6 @@ resource "aws_wafv2_web_acl" "main" {
       cloudwatch_metrics_enabled = true
       sampled_requests_enabled   = true
       metric_name                = "${local.csi}_sqli_restriction"
-    }
-  }
-
-  rule {
-    name     = "BlockSQLInjectionOutsideDOCXUpload"
-    priority = 56
-
-    action {
-      block {}
-    }
-
-    statement {
-      and_statement {
-        statement {
-          # Check if it has been flagged as SQL Injection
-          label_match_statement {
-            scope = "LABEL"
-            key   = "awswaf:managed:aws:sql-database:SQLi_Body"
-          }
-        }
-        statement {
-          # Check this is a DOCX upload path
-          regex_match_statement {
-            field_to_match {
-              uri_path {}
-            }
-            regex_string = "^\\/templates\\/upload\\-(standard\\-english|large\\-print|other\\-language)\\-letter\\-template$"
-            text_transformation {
-              priority = 10
-              type     = "NONE"
-            }
-          }
-        }
-        statement {
-          # Block unless all DOCX upload validation passes
-          not_statement {
-            statement {
-              and_statement {
-                statement {
-                  # Check if it's a multipart form upload
-                  byte_match_statement {
-                    field_to_match {
-                      single_header {
-                        name = "content-type"
-                      }
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = "multipart/form-data"
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-                statement {
-                  # Check if the multi-part request contains a DOCX content-type
-                  byte_match_statement {
-                    field_to_match {
-                      body {}
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = "Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-                statement {
-                  # Check if the body has a DOCX/ZIP signature (magic bytes check)
-                  # PK\x03\x04 is the ZIP local file header signature used by DOCX files
-                  byte_match_statement {
-                    field_to_match {
-                      body {}
-                    }
-                    positional_constraint = "CONTAINS"
-                    search_string         = base64decode("UEsDBA==")
-                    text_transformation {
-                      priority = 0
-                      type     = "NONE"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      sampled_requests_enabled   = true
-      metric_name                = "${local.csi}_sqli_docx_restriction"
     }
   }
 
