@@ -131,7 +131,7 @@ resource "aws_wafv2_web_acl" "main" {
                     # only uris to allow >8kb body are:
                     # - /templates(~<dynamic environment>)/<create|upload|edit>-letter-template(/<id>
                     # - /templates(~<dynamic environment>)/upload-<standard-english|large-print|other-language>-letter-template
-                    regex_string = "^\\/templates(?:~[a-zA-Z0-9_\\-]{1,26})?\\/(?:(?:create|upload|edit)\\-letter\\-template(?:\\/[a-z0-9\\-]*)?|upload\\-(?:standard\\-english|large\\-print|other\\-language)\\-letter\\-template)$"
+                    regex_string = "^\\/templates(?:~[a-zA-Z0-9_\\-]{1,26})?\\/(?:(?:create|upload|edit)\\-letter\\-template(?:\\/[a-z0-9\\-]*)?|upload\\-(?:standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template)$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
@@ -262,7 +262,7 @@ resource "aws_wafv2_web_acl" "main" {
                     field_to_match {
                       uri_path {}
                     }
-                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language)\\-letter\\-template$"
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
@@ -468,7 +468,7 @@ resource "aws_wafv2_web_acl" "main" {
                     field_to_match {
                       uri_path {}
                     }
-                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language)\\-letter\\-template$"
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
