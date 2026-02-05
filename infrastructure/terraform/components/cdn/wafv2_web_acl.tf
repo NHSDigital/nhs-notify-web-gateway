@@ -128,8 +128,10 @@ resource "aws_wafv2_web_acl" "main" {
                     field_to_match {
                       uri_path {}
                     }
-                    # only uri to allow >8kb body is /templates(~<dynamic environment>)/<create|upload|edit>-letter-template(/<id>)
-                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|upload|edit)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    # only uris to allow >8kb body are:
+                    # - /templates(~<dynamic environment>)/<create|upload|edit>-letter-template(/<id>
+                    # - /templates(~<dynamic environment>)/upload-<standard-english|large-print|other-language>-letter-template
+                    regex_string = "^\\/templates(?:~[a-zA-Z0-9_\\-]{1,26})?\\/(?:(?:create|upload|edit)\\-letter\\-template(?:\\/[a-z0-9\\-]*)?|upload\\-(?:standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template)$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
@@ -173,6 +175,7 @@ resource "aws_wafv2_web_acl" "main" {
     }
 
     statement {
+      # Block if it’s XSS and it is not a valid PDF upload and not a valid docx upload
       and_statement {
         statement {
           # Check if it has been flagged as XSS
@@ -182,8 +185,8 @@ resource "aws_wafv2_web_acl" "main" {
           }
         }
         statement {
-          # Block unless all PDF upload conditions are met
           not_statement {
+            # Check if it is a valid PDF upload
             statement {
               and_statement {
                 statement {
@@ -238,6 +241,73 @@ resource "aws_wafv2_web_acl" "main" {
                     }
                     positional_constraint = "CONTAINS"
                     search_string         = "%PDF-"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        statement {
+          not_statement {
+            # Check if it is a valid docx upload
+            statement {
+              and_statement {
+                statement {
+                  # check it's a docx letter upload endpoint
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if it's a multipart form upload
+                  byte_match_statement {
+                    field_to_match {
+                      single_header {
+                        name = "content-type"
+                      }
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "multipart/form-data"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the multi-part request contains a docx content-type
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the body has a docx/zip signature (magic bytes check)
+                  # PK\x03\x04 is the zip local file header signature used by docx files
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "PK\\x03\\x04"
                     text_transformation {
                       priority = 0
                       type     = "NONE"
@@ -311,6 +381,7 @@ resource "aws_wafv2_web_acl" "main" {
     }
 
     statement {
+      # Block if it’s SQLi and it is not a valid PDF upload and not a valid docx upload
       and_statement {
         statement {
           # Check if it has been flagged as SQL Injection
@@ -320,8 +391,8 @@ resource "aws_wafv2_web_acl" "main" {
           }
         }
         statement {
-          # Block unless all PDF upload conditions are met
           not_statement {
+            # Check if it is a valid PDF upload
             statement {
               and_statement {
                 statement {
@@ -376,6 +447,73 @@ resource "aws_wafv2_web_acl" "main" {
                     }
                     positional_constraint = "CONTAINS"
                     search_string         = "%PDF-"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        statement {
+          not_statement {
+            # Check if it is a valid docx upload
+            statement {
+              and_statement {
+                statement {
+                  # check it's a docx letter upload endpoint
+                  regex_match_statement {
+                    field_to_match {
+                      uri_path {}
+                    }
+                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/upload\\-(standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template$"
+                    text_transformation {
+                      priority = 10
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if it's a multipart form upload
+                  byte_match_statement {
+                    field_to_match {
+                      single_header {
+                        name = "content-type"
+                      }
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "multipart/form-data"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the multi-part request contains a docx content-type
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    text_transformation {
+                      priority = 0
+                      type     = "NONE"
+                    }
+                  }
+                }
+                statement {
+                  # Check if the body has a docx/zip signature (magic bytes check)
+                  # PK\x03\x04 is the zip local file header signature used by docx files
+                  byte_match_statement {
+                    field_to_match {
+                      body {}
+                    }
+                    positional_constraint = "CONTAINS"
+                    search_string         = "PK\\x03\\x04"
                     text_transformation {
                       priority = 0
                       type     = "NONE"
