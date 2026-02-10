@@ -14,7 +14,6 @@ repos:
       - id: pretty-format-json
         args: ['--autofix']
         exclude: '(^|/)package(-lock)?\.json$'
-    # -   id: ...
   - repo: local
     hooks:
       - id: sort-dictionary
