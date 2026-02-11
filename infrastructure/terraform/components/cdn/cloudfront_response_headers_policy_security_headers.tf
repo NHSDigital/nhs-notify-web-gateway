@@ -37,7 +37,7 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
   security_headers_config {
     # https://www.zaproxy.org/docs/alerts/10038-1/
     content_security_policy {
-      content_security_policy = "base-uri 'self'; form-action 'self'; frame-ancestors 'none'; default-src 'none'; connect-src 'self'; font-src 'self' https://assets.nhs.uk; img-src 'self'; script-src 'self'; style-src 'self'; upgrade-insecure-requests"
+      content_security_policy = "base-uri 'self'; form-action 'self'; frame-ancestors 'self'; default-src 'none'; connect-src 'self'; font-src 'self' https://assets.nhs.uk; img-src 'self'; script-src 'self'; style-src 'self'; upgrade-insecure-requests"
       override                = false
     }
     content_type_options {
