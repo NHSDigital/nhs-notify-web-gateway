@@ -195,7 +195,7 @@ resource "aws_wafv2_web_acl" "main" {
                     field_to_match {
                       uri_path {}
                     }
-                    regex_string = "^\\/templates(~[a-zA-Z0-9_\\-]{1,26})?\\/(create|edit|upload)\\-letter\\-template(\\/[a-z0-9\\-]*)?$"
+                    regex_string = "^\\/templates(?:~[a-zA-Z0-9_\\-]{1,26})?\\/(?:(?:create|upload|edit)\\-letter\\-template(?:\\/[a-z0-9\\-]*)?|upload\\-(?:standard\\-english|large\\-print|other\\-language|british\\-sign\\-language)\\-letter\\-template)$"
                     text_transformation {
                       priority = 10
                       type     = "NONE"
