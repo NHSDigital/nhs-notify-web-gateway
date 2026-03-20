@@ -4,6 +4,6 @@ resource "aws_ssm_parameter" "amplify_basic_auth_secret" {
   name        = "/${local.csi}/amplify_basic_auth_secret"
   description = "The Basic Auth password used for the amplify app. This parameter is sourced from Github Environment variables"
 
-  type  = "String"
+  type  = "SecureString"
   value = var.AMPLIFY_BASIC_AUTH_SECRET
 }
