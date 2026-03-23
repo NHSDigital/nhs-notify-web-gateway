@@ -169,6 +169,7 @@ ${VERBOSE}.SILENT: \
 	terraform-output \
 	terraform-plan \
 	terraform-plan-destroy \
+	# TODO - Re-visit Trivy usage https://nhsd-jira.digital.nhs.uk/browse/CCM-15549
 	# terraform-sec \
 	terraform-validate \
 	terraform-validate-all \
