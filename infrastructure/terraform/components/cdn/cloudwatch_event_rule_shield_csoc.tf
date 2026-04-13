@@ -15,11 +15,11 @@ resource "aws_cloudwatch_event_rule" "shield_csoc" {
 }
 
 resource "aws_cloudwatch_event_target" "shield_csoc" {
-  count          = var.csoc_log_forwarding ? 1 : 0
-  rule           = aws_cloudwatch_event_rule.shield_csoc[0].name
-  target_id      = "SendToCSOCAccount"
-  arn            = local.csoc_event_rule_shield_csoc_arn
-  role_arn       = aws_iam_role.shield_csoc_event_target[0].arn
+  count     = var.csoc_log_forwarding ? 1 : 0
+  rule      = aws_cloudwatch_event_rule.shield_csoc[0].name
+  target_id = "SendToCSOCAccount"
+  arn       = local.csoc_event_rule_shield_csoc_arn
+  role_arn  = aws_iam_role.shield_csoc_event_target[0].arn
 }
 
 resource "aws_iam_role" "shield_csoc_event_target" {

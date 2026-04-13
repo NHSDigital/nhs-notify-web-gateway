@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "shield_ddos" {
-  count    = var.csoc_log_forwarding ? 1 : 0
+  count = var.csoc_log_forwarding ? 1 : 0
 
   alarm_name          = "${local.csi}-shield-ddos-cdn"
   alarm_description   = "SHIELD: Triggers when a DDoS attack is detected on the CDN CloudFront distribution"
