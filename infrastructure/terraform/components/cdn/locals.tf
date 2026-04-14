@@ -20,4 +20,13 @@ locals {
   }
 
   destination_arn_us = "arn:aws:logs:us-east-1:${var.shared_infra_account_id}:destination:nhs-main-obs-us-east-1-firehose-logs"
+
+  csoc_waf_log_destination_arn_us = var.csoc_log_forwarding ? format("arn:aws:logs:us-east-1:%s:destination:waf_log_destination_virginia",
+    var.csoc_destination_account
+  ) : null
+
+  csoc_event_rule_shield_csoc_arn = var.csoc_log_forwarding ? format("arn:aws:events:%s:%s:event-bus/shield-eventbus",
+    var.region,
+    var.csoc_destination_account
+  ) : null
 }
