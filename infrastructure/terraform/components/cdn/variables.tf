@@ -168,3 +168,15 @@ variable "template_files_origin_domain_name" {
   type        = string
   description = "Domain name for template file download origin"
 }
+
+variable "csoc_log_forwarding" {
+  type        = bool
+  description = "Flag indicating whether WAF logs should be forwarded to the CSOC (this should be false for nonprod accounts until CSOC confirm they are ready to receive nonprod logs)"
+  default     = true
+}
+
+variable "csoc_destination_account" {
+  type        = string
+  description = "The AWS Account ID of the CSOC destination account for WAF log forwarding"
+  default     = "000000000000"
+}
