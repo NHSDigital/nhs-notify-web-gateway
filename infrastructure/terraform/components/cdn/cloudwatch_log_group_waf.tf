@@ -1,6 +1,7 @@
 resource "aws_cloudwatch_log_group" "waf" {
   provider = aws.us-east-1
   name     = "aws-waf-logs-${local.csi}"
+  retention_in_days = var.log_retention_in_days
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "main" {
