@@ -9,6 +9,7 @@
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.7 |
 | <a name="requirement_github"></a> [github](#requirement\_github) | ~> 6.0 |
+| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.9 |
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -19,6 +20,8 @@
 | <a name="input_cdn_sans"></a> [cdn\_sans](#input\_cdn\_sans) | Aliases to associate with CDN | `list(string)` | `[]` | no |
 | <a name="input_cms_origin"></a> [cms\_origin](#input\_cms\_origin) | Object to specify static domains for CMS | <pre>object({<br/>    domain_name = string,<br/>    origin_path = string,<br/>    origin_id   = string<br/>  })</pre> | <pre>{<br/>  "domain_name": "nhsdigital.github.io",<br/>  "origin_id": "github-nhs-notify-web-cms",<br/>  "origin_path": "/nhs-notify-web-cms-dev"<br/>}</pre> | no |
 | <a name="input_component"></a> [component](#input\_component) | The variable encapsulating the name of this component | `string` | `"cdn"` | no |
+| <a name="input_csoc_destination_account"></a> [csoc\_destination\_account](#input\_csoc\_destination\_account) | The AWS Account ID of the CSOC destination account for WAF log forwarding | `string` | `"000000000000"` | no |
+| <a name="input_csoc_log_forwarding"></a> [csoc\_log\_forwarding](#input\_csoc\_log\_forwarding) | Flag indicating whether WAF logs should be forwarded to the CSOC (this should be false for nonprod accounts until CSOC confirm they are ready to receive nonprod logs) | `bool` | `true` | no |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | A map of default tags to apply to all taggable resources within the component | `map(string)` | `{}` | no |
 | <a name="input_digital_letters_origin"></a> [digital\_letters\_origin](#input\_digital\_letters\_origin) | Object to specify static domains for Digital Letters Schemas | <pre>object({<br/>    domain_name = string,<br/>    origin_path = string,<br/>    origin_id   = string<br/>  })</pre> | <pre>{<br/>  "domain_name": "nhsdigital.github.io",<br/>  "origin_id": "github-nhs-notify-digital-letters",<br/>  "origin_path": "/nhs-notify-digital-letters"<br/>}</pre> | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | The name of the tfscaffold environment | `string` | n/a | yes |
