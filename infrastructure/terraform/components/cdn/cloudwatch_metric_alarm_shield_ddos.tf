@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_metric_alarm" "shield_ddos" {
-  count = var.csoc_log_forwarding ? 1 : 0
+  count    = var.csoc_log_forwarding ? 1 : 0
   provider = aws.us-east-1
 
   alarm_name          = "${local.csi}-shield-ddos-cdn"
